@@ -1,6 +1,6 @@
 import covid_data_handler
 
-import sched, time, threading, uuid
+import sched, time, threading, uuid, logging
 
 class BackgroundDataUpdateHandler():
     global_data_store = {
@@ -15,6 +15,7 @@ class BackgroundDataUpdateHandler():
     background_thread_instance = None
 
     def __init__(self):
+        logging.info("Initializing data store")
         self.update_covid_data()
 
         self.scheduler_instance = sched.scheduler(time.time, time.sleep)
@@ -22,11 +23,15 @@ class BackgroundDataUpdateHandler():
         self.background_thread_instance = threading.Thread(target=self.__background_thread, daemon=True)
         self.background_thread_instance.start()
 
+        logging.info("Started background event handler")
+
     def update_covid_data(self):
+        logging.info("Updating covid data")
         self.global_data_store["covid_data"] = {
             "local": covid_data_handler.covid_API_request(),
             "national": covid_data_handler.covid_API_request(location="England", location_type="nation")
         }
+        logging.info("Updated covid data")
 
     def get_covid_data(self): return self.global_data_store["covid_data"]
 
@@ -54,9 +59,10 @@ class BackgroundDataUpdateHandler():
         return sorted
 
     def schedule(self, data_update):
+        logging.error("Update named {} scheduled for {} seconds in the future".format(data_update.label, data_update.interval))
         self.scheduled_events.append(data_update)
         self.scheduler_instance.enter(
-            delay=data_update.interval,
+            delay=10,
             priority=0,
             action=self._run_data_update,
             argument=[data_update]
