@@ -10,8 +10,8 @@ import threading
 import uuid
 import logging
 
-import covid_data_handler
-import covid_news_handler
+from . import covid_data_handler
+from . import covid_news_handler
 
 class BackgroundDataUpdateHandler():
     """Manages retrival, storage and handling of covid and covid news data.
@@ -107,8 +107,8 @@ class BackgroundDataUpdateHandler():
         news_articles = filter(filter_removed_articles, self.global_data_store["news_data"]["articles"])
 
         organized_data = {
-            "deaths_total": iterate_list_of_dicts_till_key_not_none(national_data["data"], "cumDeaths28DaysByDeathDate"),
-            "hospital_cases": iterate_list_of_dicts_till_key_not_none(national_data["data"], "hospitalCases"),
+            "deaths_total": "Total Deaths: {}".format(iterate_list_of_dicts_till_key_not_none(national_data["data"], "cumDeaths28DaysByDeathDate")),
+            "hospital_cases": "Hospital Cases: {}".format(iterate_list_of_dicts_till_key_not_none(national_data["data"], "hospitalCases")),
             "local_7day_infections": iterate_list_of_dicts_till_key_not_none(local_data["data"], "newCasesByPublishDateRollingSum"),
             "national_7day_infections": iterate_list_of_dicts_till_key_not_none(national_data["data"], "newCasesByPublishDateRollingSum"),
             "news_articles": news_articles
@@ -120,7 +120,7 @@ class BackgroundDataUpdateHandler():
         """Schedules a data update event defined in the given instance of DataUpdate
         That instance is then added to scheduled_events
         """
-        logging.error("Update named %s scheduled for %i seconds in the future", data_update.label, data_update.interval)
+        logging.info("Update named %s scheduled for %i seconds in the future", data_update.label, data_update.interval)
         data_update.sched_event_instance = self.scheduler_instance.enter(
             delay=10,
             priority=0,
@@ -135,7 +135,7 @@ class BackgroundDataUpdateHandler():
         self.scheduled_events = list(filter(lambda i: i.uuid != data_update.uuid, self.scheduled_events))
 
     def _run_data_update(self, data_update: "DataUpdate"):
-        print("Running data update")
+        logging.info("Running data update")
         if data_update.update_covid_data:
             self.update_covid_data()
         if data_update.update_news_data:

@@ -1,0 +1,8 @@
+{
+    "newsapi_key": "31c1a215c63d49fa9c3a65d259934575",
+    "logging": {
+        "file": "",
+        "level": "INFO"
+    },
+    "flask_debug": true
+}

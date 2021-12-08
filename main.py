@@ -1,5 +1,5 @@
-def main():
-    
+from dashboard import app
+from dashboard.config import config
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=config["flask_debug"])

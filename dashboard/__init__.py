@@ -1,9 +1,20 @@
-from flask import Flask, render_template, request
+"""Main dashboard app file.
+Defines the flask app object
+"""
 
-import covid_data_handler, datetime, logging
-from data_handler import DataUpdate, BackgroundDataUpdateHandler
+import logging
 
-logging.basicConfig(level=logging.INFO)
+from flask import Flask, render_template, request, url_for, send_file
+
+from .data_handler import DataUpdate, BackgroundDataUpdateHandler
+
+from .config import config
+
+logging.basicConfig(
+    filename=config["logging"]["file"],
+    level=config["logging"]["level"],
+    format='%(asctime)s %(levelname)-8s %(message)s'
+)
 
 app = Flask(__name__)
 
@@ -11,31 +22,44 @@ data_handler = BackgroundDataUpdateHandler()
 
 @app.route("/healthcheck")
 def healthcheck():
+    """Returns "OK" if the app is running"""
     return "OK"
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_file("static/favicon.ico")
 
 @app.route("/")
 @app.route("/index")
 def dashboard():
+    """Main dashboard view.
+    Renders the template and handles requests
+    """
     data = data_handler.dashboard_data()
 
-    # TODO: Fix
     if "two" in request.args:
         if ":" in request.args["update"]:
-            # TODO Change to hours and minutes
-            [minutes, seconds] = list(map(int, request.args["update"].split(":")))
+            [hours, minutes] = list(map(int, request.args["update"].split(":")))
         else:
+            hours = 0
             minutes = 5
-            seconds = 0
-        update_delay = seconds + minutes*60
+        update_delay = minutes*60 + hours*60*60
         update_label = request.args["two"]
         update_repeat = "repeat" in request.args
         update_covid_data = "covid-data" in request.args
 
-        update = DataUpdate(interval=update_delay, label=update_label, repeat=update_repeat, update_covid_data=update_covid_data)
+        update = DataUpdate(interval=update_delay,
+            label=update_label,
+            repeat=update_repeat,
+            update_covid_data=update_covid_data
+        )
         data_handler.schedule(update)
-    
+
     if "update_item" in request.args:
-        event_to_remove = filter(lambda i: i.label == request.args["update_item"], data_handler.scheduled_events)
+        event_to_remove = filter(
+            lambda i: i.label == request.args["update_item"],
+            data_handler.scheduled_events
+        )
         for event in event_to_remove:
             data_handler.remove(event)
 
@@ -57,6 +81,3 @@ def dashboard():
         nation_location="England",
         updates=updates
     )
-
-if __name__ == "__main__":
-    app.run(debug=True)
