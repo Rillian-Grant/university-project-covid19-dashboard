@@ -4,7 +4,7 @@ Test covid_data_handler.py
 import unittest
 import time
 from urllib.request import urlopen
-from dashboard.covid_data_handler import parse_csv_data, process_covid_csv_data, covid_api_request, schedule_covid_updates
+from dashboard.covid_data_handler import parse_csv_data, process_covid_csv_data, covid_api_request
 
 class TestParseCsvData(unittest.TestCase):
     def test_correct_number_of_lines(self):
@@ -24,10 +24,6 @@ class TestCovidApiRequest(unittest.TestCase):
 
     def test_something(self):
         covid_api_request()
-
-class TestScheduleCovidUpdates(unittest.TestCase):
-    def test_schedule_covid_updates():
-        schedule_covid_updates(1, "Tests")
         
 
 if __name__ == '__main__':

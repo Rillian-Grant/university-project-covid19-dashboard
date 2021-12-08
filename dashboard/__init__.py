@@ -77,7 +77,7 @@ def dashboard():
 
     return render_template("index.html",
         **data,
-        location="Exeter",
-        nation_location="England",
+        location=config["location"],
+        nation_location=config["location-nation"],
         updates=updates
     )

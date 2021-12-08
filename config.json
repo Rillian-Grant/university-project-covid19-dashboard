@@ -4,5 +4,8 @@
         "file": "",
         "level": "INFO"
     },
+    "location": "Exeter",
+    "location-type": "ltla",
+    "location-nation": "England",
     "flask_debug": true
 }

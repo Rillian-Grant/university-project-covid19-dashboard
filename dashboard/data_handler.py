@@ -10,6 +10,8 @@ import threading
 import uuid
 import logging
 
+from .config import config
+
 from . import covid_data_handler
 from . import covid_news_handler
 
@@ -50,9 +52,12 @@ class BackgroundDataUpdateHandler():
         """Update covid data (local and national) in this instance's data store"""
         logging.info("Updating covid data")
         self.global_data_store["covid_data"] = {
-            "local": covid_data_handler.covid_api_request(),
+            "local": covid_data_handler.covid_api_request(
+                location=config["location"],
+                location_type=config["location-type"]
+            ),
             "national": covid_data_handler.covid_api_request(
-                location="England",
+                location=config["location-nation"],
                 location_type="nation"
             )
         }
@@ -104,7 +109,7 @@ class BackgroundDataUpdateHandler():
         local_data = self.global_data_store["covid_data"]["local"]
         national_data = self.global_data_store["covid_data"]["national"]
 
-        news_articles = filter(filter_removed_articles, self.global_data_store["news_data"]["articles"])
+        news_articles = list(filter(filter_removed_articles, self.global_data_store["news_data"]["articles"]))
 
         organized_data = {
             "deaths_total": "Total Deaths: {}".format(iterate_list_of_dicts_till_key_not_none(national_data["data"], "cumDeaths28DaysByDeathDate")),
