@@ -1,11 +1,12 @@
 {
     "newsapi_key": "31c1a215c63d49fa9c3a65d259934575",
     "logging": {
-        "file": "",
-        "level": "INFO"
+        "file": ""
     },
     "location": "Exeter",
     "location-type": "ltla",
     "location-nation": "England",
-    "flask_debug": true
+    "flask_debug": false,
+    "host": "0.0.0.0",
+    "port": 80
 }

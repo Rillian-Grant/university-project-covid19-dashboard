@@ -4,7 +4,7 @@ import sched
 import threading
 import random
 
-from dashboard.data_handler import BackgroundDataUpdateHandler, DataUpdate
+from covid19_dashboard.data_handler import BackgroundDataUpdateHandler, DataUpdate
 
 class TestBackgroundDataUpdateHandler(unittest.TestCase):
     @classmethod

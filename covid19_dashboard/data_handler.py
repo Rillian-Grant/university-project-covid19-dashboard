@@ -109,23 +109,41 @@ class BackgroundDataUpdateHandler():
         local_data = self.global_data_store["covid_data"]["local"]
         national_data = self.global_data_store["covid_data"]["national"]
 
-        news_articles = list(filter(filter_removed_articles, self.global_data_store["news_data"]["articles"]))
+        news_articles = list(filter(
+            filter_removed_articles,
+            self.global_data_store["news_data"]["articles"])
+        )
 
         organized_data = {
-            "deaths_total": "Total Deaths: {}".format(iterate_list_of_dicts_till_key_not_none(national_data["data"], "cumDeaths28DaysByDeathDate")),
-            "hospital_cases": "Hospital Cases: {}".format(iterate_list_of_dicts_till_key_not_none(national_data["data"], "hospitalCases")),
-            "local_7day_infections": iterate_list_of_dicts_till_key_not_none(local_data["data"], "newCasesByPublishDateRollingSum"),
-            "national_7day_infections": iterate_list_of_dicts_till_key_not_none(national_data["data"], "newCasesByPublishDateRollingSum"),
+            "deaths_total": "Total Deaths: {}".format( #pylint: disable=consider-using-f-string
+                iterate_list_of_dicts_till_key_not_none(national_data["data"],
+                "cumDeaths28DaysByDeathDate"
+            )),
+            "hospital_cases": "Hospital Cases: {}".format( #pylint: disable=consider-using-f-string
+                iterate_list_of_dicts_till_key_not_none(national_data["data"],
+                "hospitalCases"
+            )),
+            "local_7day_infections": iterate_list_of_dicts_till_key_not_none(
+                local_data["data"],
+                "newCasesByPublishDateRollingSum"
+            ),
+            "national_7day_infections": iterate_list_of_dicts_till_key_not_none(
+                national_data["data"],
+                "newCasesByPublishDateRollingSum"
+            ),
             "news_articles": news_articles
         }
 
         return organized_data
 
-    def schedule(self, data_update: "DataUpdate"): # TODO: String type hints bc why not
+    def schedule(self, data_update: "DataUpdate"):
         """Schedules a data update event defined in the given instance of DataUpdate
         That instance is then added to scheduled_events
         """
-        logging.info("Update named %s scheduled for %i seconds in the future", data_update.label, data_update.interval)
+        logging.info("Update named %s scheduled for %i seconds in the future",
+            data_update.label,
+            data_update.interval
+        )
         data_update.sched_event_instance = self.scheduler_instance.enter(
             delay=10,
             priority=0,
@@ -137,7 +155,10 @@ class BackgroundDataUpdateHandler():
     def remove(self, data_update: "DataUpdate"):
         """Cancels a scheduled event"""
         self.scheduler_instance.cancel(data_update.sched_event_instance)
-        self.scheduled_events = list(filter(lambda i: i.uuid != data_update.uuid, self.scheduled_events))
+        self.scheduled_events = list(filter(
+            lambda i: i.uuid != data_update.uuid,
+            self.scheduled_events
+        ))
 
     def _run_data_update(self, data_update: "DataUpdate"):
         logging.info("Running data update")
@@ -169,7 +190,14 @@ class DataUpdate:
     update_news_data: bool = False
     sched_event_instance: bool = None
 
-    def __init__(self, interval: int=0, label: str="Data Update", repeat: bool=False, update_covid_data: bool=False, update_news_data: bool=False):
+    def __init__(
+        self,
+        interval: int=0,
+        label: str="Data Update",
+        repeat: bool=False,
+        update_covid_data: bool=False,
+        update_news_data: bool=False
+    ):
         self.uuid = uuid.uuid1()
         self.label = label
         self.interval = interval

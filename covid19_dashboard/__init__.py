@@ -12,7 +12,7 @@ from .config import config
 
 logging.basicConfig(
     filename=config["logging"]["file"],
-    level=config["logging"]["level"],
+    level=logging.INFO,
     format='%(asctime)s %(levelname)-8s %(message)s'
 )
 
@@ -27,6 +27,7 @@ def healthcheck():
 
 @app.route('/favicon.ico')
 def favicon():
+    """Returns the file /static/favicon.ico"""
     return send_file("static/favicon.ico")
 
 @app.route("/")
@@ -80,4 +81,15 @@ def dashboard():
         location=config["location"],
         nation_location=config["location-nation"],
         updates=updates
+    )
+
+def run_app():
+    """Run the app.
+    Used by setup.py as the command line entrypoint.
+    Same as main.py
+    """
+    app.run(
+        debug=config["flask_debug"],
+        host=config["host"],
+        port=config["port"]
     )

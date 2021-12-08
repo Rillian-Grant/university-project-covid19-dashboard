@@ -1,5 +1,10 @@
 # university-project-covid19-dashboard
-  Simple personalised covid information dashboard
+
+Simple personalised covid information dashboard
+
+# Errors
+
+pylint says unsubscriptable-object. Not sure why, the object is definitely subscriptable
 
 # Notes:
 * Use type hinting. For possible extra marks.
@@ -12,3 +17,4 @@
 * Header image in static folder has no file extension due to template. The full file name is "images"
 * Bad formatting on update info. Due to template
 * No links on news articles. Due to template
+* My api key is hardcoded

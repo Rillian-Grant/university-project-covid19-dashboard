@@ -33,7 +33,9 @@ def process_covid_csv_data(row_list: List[str]) -> Tuple[int, int, int]:
     return (cases_in_last_7_days, current_hospital_cases, total_deaths)
 
 def covid_api_request(location: str="Exeter", location_type: str="ltla") -> dict:
-    """Proforms a covid api request with the given location parameters and returns the resulting data structure"""
+    """Proforms a covid api request.
+    Uses the given location parameters and returns the resulting data structure.
+    """
     api = Cov19API(
         filters=[
             "areaType=" + location_type,
