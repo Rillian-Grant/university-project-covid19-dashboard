@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='rillian-grant-university-project-covid19-dashboard',
-    version='1.0.1',
+    version='1.0.2',
     description_file="README.md",
     url='https://github.com/Rillian-Grant/university-project-covid19-covid19_dashboard.git',
     author='Rillian Grant',
