@@ -1,9 +1,15 @@
 from setuptools import setup
 
+# read the contents of your README file
+from pathlib import Path
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
+
 setup(
     name='rillian-grant-university-project-covid19-dashboard',
     version='1.0.2',
-    description_file="README.md",
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/Rillian-Grant/university-project-covid19-covid19_dashboard.git',
     author='Rillian Grant',
     author_email='rillian.grant@gmail.com',
